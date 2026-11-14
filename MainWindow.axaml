@@ -1,0 +1,97 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:Scatter"
+        x:Class="Scatter.MainWindow"
+        Title="Scatter"
+        Width="1280" Height="800"
+        MinWidth="640" MinHeight="400"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E22">
+
+    <Grid>
+
+        <!-- ================= Экран холста ================= -->
+        <Grid RowDefinitions="Auto,*">
+
+            <!-- Верхняя панель -->
+            <Border Grid.Row="0" Background="#26262B" Padding="10,8">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button x:Name="BackButton" Content="← К списку" Click="OnBackClick"/>
+                    <Button x:Name="OpenButton" Content="Открыть папку…" Click="OnOpenFolderClick"/>
+                    <TextBlock x:Name="StatusText" VerticalAlignment="Center"
+                               Foreground="#B0FFFFFF" Text="Папка не выбрана"/>
+                    <TextBlock x:Name="SaveText" VerticalAlignment="Center"
+                               Foreground="#80FFFFFF" FontSize="12"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Viewport: всё, что видит пользователь. Ловит указатель и обрезает содержимое по границам. -->
+            <Grid x:Name="Viewport" Grid.Row="1" Background="Transparent" ClipToBounds="True">
+
+                <!-- Фон-сетка -->
+                <local:GridBackground x:Name="GridLayer" IsHitTestVisible="False"/>
+
+                <!-- Картинки. Рисует сам, ввод обрабатывает Viewport. -->
+                <local:MoodboardView x:Name="Board" IsHitTestVisible="False"/>
+
+                <!-- HUD -->
+                <TextBlock x:Name="ZoomText"
+                           HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                           Margin="12,0,0,10"
+                           Foreground="#80FFFFFF" FontSize="12"
+                           IsHitTestVisible="False"/>
+            </Grid>
+        </Grid>
+
+        <!-- ================= Полноэкранный просмотр =================
+             Лежит поверх холста. Клик по тёмному фону закрывает, Esc тоже. -->
+        <Grid x:Name="ViewerScreen" Background="#F0101014" IsVisible="False">
+            <Image x:Name="ViewerImage" Margin="64,56" Stretch="Uniform"/>
+
+            <TextBlock x:Name="ViewerCaption"
+                       HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                       Margin="0,0,0,16" Foreground="#B0FFFFFF"
+                       IsHitTestVisible="False"/>
+
+            <Button x:Name="ViewerCloseButton" Content="✕"
+                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="16" Padding="12,8" Click="OnViewerCloseClick"/>
+
+            <Button x:Name="ViewerPrevButton" Content="‹" FontSize="28"
+                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Margin="12,0,0,0" Padding="14,2" Click="OnViewerPrevClick"/>
+
+            <Button x:Name="ViewerNextButton" Content="›" FontSize="28"
+                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Margin="0,0,12,0" Padding="14,2" Click="OnViewerNextClick"/>
+        </Grid>
+
+        <!-- ================= Стартовый экран =================
+             Лежит поверх холста и закрывает его целиком. Холст под ним остаётся
+             на месте, чтобы у него всегда были правильные размеры. -->
+        <Grid x:Name="StartScreen" Background="#1E1E22">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Width="560" Spacing="14">
+
+                <TextBlock Text="Scatter" FontSize="40" FontWeight="SemiBold" Foreground="White"/>
+                <TextBlock Text="Мудборды из папок с картинками" FontSize="14" Foreground="#99FFFFFF"/>
+
+                <Button x:Name="StartOpenButton" Content="Открыть папку…"
+                        Click="OnOpenFolderClick"
+                        HorizontalAlignment="Left" Padding="22,10" Margin="0,10,0,0"/>
+
+                <TextBlock x:Name="StartMessage" Foreground="#FF8A80" TextWrapping="Wrap"/>
+
+                <TextBlock x:Name="RecentHeader" Text="Недавние папки"
+                           FontSize="13" Foreground="#B0FFFFFF" Margin="0,14,0,0"/>
+
+                <ScrollViewer MaxHeight="400">
+                    <StackPanel x:Name="RecentList" Spacing="6"/>
+                </ScrollViewer>
+
+                <TextBlock x:Name="RecentEmpty" Text="Пока пусто. Открой первую папку."
+                           Foreground="#80FFFFFF"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
